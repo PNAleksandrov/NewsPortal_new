@@ -19,7 +19,9 @@
     from news.models import Post
     Post.objects.create(author = Author(pk=1), post_type = Post.article, title = "Политика", text = "В Багдаде все спокойно")
     Post.objects.create(author = Author(pk=2), post_type = Post.article, title = "Спорт", text = "Аргентина чемпион мира по футболу 2022")
-    Post.objects.create(author = Author(pk=1), post_type = Post.news, title = "Музыка", text = "Концерта группы GreenDay в Москве не будет")
+    Post.objects.create(author = Author(pk=1), post_type = Post.news, title = "Музыка", text = "Концерта группы GreenDay в Москве не будет") 
+    #   Post.objects.create(author = Author(pk=2), post_type = Post.news, title = "Другое", text = "Какая-то редиска, написала плохую новость. урод")
+
 
 #   Post.objects.create(author = Author(pk=2), post_type = Post.news, title = "Другое", text = "Какая-то редиска, написала плохую новость. урод")
 
