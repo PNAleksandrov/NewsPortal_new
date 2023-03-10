@@ -1,0 +1,16 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+New
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим саму новость, идентификатор которого был передан в url -->
+{% block content %}
+<h1>Новость</h1>
+<hr>
+    <p style="text-align: left;">{{ news.title|censor }}</p>
+    <p style="text-align: left;">{{ news.text|censor }}</p>
+    <p style="text-align: left;">{{ news.created|date:'d M Y' }}</p>
+{% endblock content %}
