@@ -1,0 +1,28 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+NewsSearch
+{% endblock title %}
+
+{% block content %}
+<h1>Поиск новостей.</h1>
+
+<form action="" method="get">
+
+   {{ filterset.form.as_p }}
+
+   <input type="submit" value="Найти" />
+</form>
+
+<hr>
+<table>
+    {% for post in news_search %}
+           <tr style="height: 100px;">
+               <td style="height: 100px;">{{ post.name_news }}</td>
+               <td style="height: 100px;">{{ post.data_time }}</td>
+               <td style="height: 100px;">{{ post.preview }}</td>
+           </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}
