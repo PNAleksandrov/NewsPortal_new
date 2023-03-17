@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Author(models.Model):
@@ -51,7 +52,10 @@ class Post(models.Model):
 
     def preview(self):
         size = 124 if len(self.text) > 124 else len(self.text)
-        return self.text[:size] + '...'
+        return self.text[:size] + '..'
+
+    def get_absolute_url(self):
+        return reverse('news_create', args=[str(self.id)])
 
     def __str__(self):
         return f'{self.title.title()}: {self.text}'

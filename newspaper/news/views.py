@@ -6,12 +6,14 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Post
 
 
+
+
 class PostList(ListView):
     model = Post
     ordering = '-created'
     template_name = 'news.html'
     context_object_name = 'news'
-    paginate_by = 2
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -54,6 +56,7 @@ class NewsCreate(CreateView):
     form_class = NewsForm
     model = Post
     template_name = 'news_create.html'
+    success_url = reverse_lazy('news_list')
 
     def form_valid(self, form):
         news = form.save(commit=False)
@@ -65,10 +68,11 @@ class ArticlesCreate(CreateView):
     form_class = NewsForm
     model = Post
     template_name = 'articles_create.html'
+    success_url = reverse_lazy('news_list')
 
     def form_valid(self, form):
         news = form.save(commit=False)
-        news.post_type = Post.news
+        news.post_type = 'a'
         return super().form_valid(form)
 
 
