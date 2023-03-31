@@ -3,9 +3,9 @@ from .filters import NewsFilter
 from .forms import NewsForm
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post
-
-
+from .models import Post, Category
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 
 class PostList(ListView):
@@ -101,4 +101,43 @@ class ArticlesDelete(DeleteView):
     model = Post
     template_name = 'news_delete.html'
     success_url = reverse_lazy('news_list')
-    queryset = Post.objects.filter(post_type='a')
+    queryset = Post.objects.filter(post_type='a')\
+
+
+class CategoryList(ListView):
+    model = Post
+    template_name = 'category_list.html'
+    context_object_name = 'category_post_list'
+
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+        post_list_by_category = Post.objects.filter(category=self.category).order_by('-created')
+
+        return post_list_by_category
+
+    #проверяем подписан ли User на эту категорию
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #Добавляем флаг если не пользователь
+        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+        context['category'] = self.category
+        return context
+
+@login_required
+def subscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.add(user)
+
+    message = 'Вы успешно подписались на категорию'
+    return render(request, 'flatpages/subscribe.html', {'category': category, 'message': message})
+
+
+@login_required
+def unsubscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.remove(user)
+
+    message = 'Вы отписаны'
+    return render(request, 'flatpages/subscribe.html', {'category': category, 'message': message})
