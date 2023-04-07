@@ -5,9 +5,9 @@ import time
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-from NewsPaper import settings
-from news_app.models import Post, Category
-from news_app.signals import send_email_notif
+from newspaper import settings
+from .models import Post, Category
+from .signals import send_email_notif
 
 
 @shared_task
@@ -15,22 +15,16 @@ def hello():
     time.sleep(10)
     print("Hello, world!")
 
-@shared_task
-def printer(N):
-    for i in range(N):
-        time.sleep(1)
-        print(i+1)
-
 
 @shared_task
 def notify_at_new_post_added(post_pk):
-    #обьект статьи
+    # обьект статьи
     post = Post.objects.get(id=post_pk)
 
     #получаем категории добавленной статьи
     categories = post.category.all()
 
-    #наполняем список подписчиков категорий добавленной статьи
+    # наполняем список подписчиков категорий добавленной статьи
     subscribers = []
     for category in categories:
         subscribers += category.subscribers.all()
@@ -41,10 +35,9 @@ def notify_at_new_post_added(post_pk):
 
     send_email_notif(post.preview(), post.pk, post.title, subscribers_email_list)
 
+
 @shared_task
-def weekly_spam():
-    # #Your job processing logic here...
-    # print('hello from job')
+def weekly_news():
 
     today = datetime.datetime.now()
     last_week = today - datetime.timedelta(days=7)

@@ -2,16 +2,16 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'NewsPaper.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newspaper.settings')
 
-app = Celery('NewsPaper')
+app = Celery('newspaper')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
     'spam_weekly': {
-        'task': 'news_app.tasks.weekly_spam',
+        'task': 'news.tasks.weekly_spam',
         'schedule': crontab(hour=1, minute=0, day_of_week='monday'), #crontab(minute='*/1'),
     },
 }
