@@ -64,6 +64,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
+    # 'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.common.CommonMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 
 ]
 
@@ -168,7 +171,7 @@ ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'windmilll'
-EMAIL_HOST_PASSWORD = '***'
+EMAIL_HOST_PASSWORD = 'Paragliding2019!'
 EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = 'windmilll@yandex.ru'
@@ -189,11 +192,23 @@ SERVER_EMAIL = 'windmilll@yandex.ru'
 
 # формат даты, которую будет воспринимать наш задачник (вспоминаем модуль по фильтрам)
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
+# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше,
+# но как правило, это сильно бьёт по производительности сервера
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
-CELERY_BROKER_URL = 'redis://default:VEoyK2o8f95jrIPyYJ5zy1ushU2v9EjG@redis-15186.c299.asia-northeast1-1.gce.cloud.redislabs.com:15186'
-CELERY_RESULT_BACKEND = 'redis://default:VEoyK2o8f95jrIPyYJ5zy1ushU2v9EjG@redis-15186.c299.asia-northeast1-1.gce.cloud.redislabs.com:15186'
+CELERY_BROKER_URL = 'redis://default:VEoyK2o8f95jrIPyYJ5zy1ushU2v9EjG@redis-15186.c299.' \
+                    'asia-northeast1-1.gce.cloud.redislabs.com:15186'
+CELERY_RESULT_BACKEND = 'redis://default:VEoyK2o8f95jrIPyYJ5zy1ushU2v9EjG@redis-15186.c299.' \
+                        'asia-northeast1-1.gce.cloud.redislabs.com:15186'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+CACHES = {
+    'default': {
+        'TIMEOUT': 300,  # ожидания 5 минут
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}

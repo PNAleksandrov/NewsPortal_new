@@ -2,10 +2,12 @@ from datetime import datetime
 from .filters import NewsFilter
 from .forms import NewsForm
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView)
 from .models import Post, Category
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.core.cache import cache
 
 
 class PostList(ListView):
@@ -30,7 +32,16 @@ class PostList(ListView):
 class NewsDetail(DetailView):
     model = Post
     template_name = 'new.html'
-    context_object_name = 'news'
+    context_object_name = 'new'
+
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'product-{self.kwargs["pk"]}',
+                        None)  # кэш очень похож на словарь, и метод get действует так же. Он забирает значение по ключу, если его нет, то забирает None.
+
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'product-{self.kwargs["pk"]}', obj)
 
 
 class NewsSearch(ListView):
@@ -141,3 +152,4 @@ def unsubscribe(request, pk):
 
     message = 'Вы отписаны'
     return render(request, 'flatpages/subscribe.html', {'category': category, 'message': message})
+
